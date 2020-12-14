@@ -30,10 +30,20 @@ namespace Api.Controllers
 
         [HttpGet]
         public ActionResult ObterInfectados()
-        {
+        { 
             var infectados = _infectadosCollection.Find(Builders<Infectado>.Filter.Empty).ToList();
             
             return Ok(infectados);
+        }
+
+        [HttpPatch]
+        public ActionResult AtualizarSexoInfectado([FromBody] InfectadoDto dto)
+        {   
+            var infectado = new Infectado(dto.CodigoPaciente, dto.Sexo);
+
+            _infectadosCollection.UpdateOne(Builders<Infectado>.Filter.Where(_ => _.CodigoPaciente == dto.CodigoPaciente), Builders<Infectado>.Update.Set("sexo", dto.Sexo));
+            
+            return StatusCode(200, "Infectado atualizado com sucesso");
         }
     }
 }
